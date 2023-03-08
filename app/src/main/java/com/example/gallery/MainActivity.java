@@ -6,6 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.gallery.libs.GalleryAlbumProvider;
+import com.example.gallery.libs.domain.GetPhotoInput;
+import com.example.gallery.libs.domain.GetPhotoOutput;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        loadAlbums();
+        loadPhotos();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -69,7 +71,10 @@ public class MainActivity extends AppCompatActivity {
         //Log.println(Log.DEBUG,"wweng", Integer.toString(albums.size()));
     }
     private void loadAlbums() {
-
+        Map<String,Integer> albums = null;// GalleryAlbumProvider.getAlbums(this);
+        if(albums!=null) {
+            Log.println(Log.DEBUG, "wweng", Integer.toString(albums.size()));
+        }
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -94,8 +99,19 @@ public class MainActivity extends AppCompatActivity {
                 // result of the request.
             }
         } else {
-           Map<String,Integer> albums = GalleryAlbumProvider.getAlbums(this);
+           albums = GalleryAlbumProvider.getAlbums(this);
            Log.println(Log.DEBUG,"wweng", Integer.toString(albums.size()));
         }
+    }
+
+    private  void loadPhotos(){
+        GetPhotoInput input = new GetPhotoInput();
+        input.AssetType="All";
+        GalleryAlbumProvider.getPhotos(input, this, new GalleryAlbumProvider.GetPhotoCallback() {
+            @Override
+            public void onResult(GetPhotoOutput result) {
+                Log.println(Log.DEBUG,"wweng","result");
+            }
+        });
     }
 }

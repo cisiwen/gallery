@@ -1,4 +1,4 @@
-package com.example.gallery.libs;
+package com.example.gallery.libs.domain;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,3 +18,4 @@ public class GetPhotoInput {
     public List<String> MimeTypes;
     public Set<String> Include;
 }
+

@@ -1,6 +1,8 @@
 package com.example.gallery.ui.main;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
 import com.example.gallery.databinding.FragmentMainBinding;
+import com.example.gallery.libs.GalleryAlbumProvider;
+import com.example.gallery.libs.domain.GetPhotoInput;
+import com.example.gallery.libs.domain.GetPhotoOutput;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -25,6 +33,8 @@ public class PlaceholderFragment extends Fragment {
     private PageViewModel pageViewModel;
     private FragmentMainBinding binding;
 
+    private RecyclerView recyclerView;
+    private GalleryListRecylerviewDataAdaptor dataAdaptor;
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
         Bundle bundle = new Bundle();
@@ -42,6 +52,7 @@ public class PlaceholderFragment extends Fragment {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
+        loadPhotos(this.getContext());
     }
 
     @Override
@@ -51,17 +62,25 @@ public class PlaceholderFragment extends Fragment {
 
         binding = FragmentMainBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.sectionLabel;
-        pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        recyclerView = (RecyclerView) root.findViewById(R.id.listview);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),4);
+        recyclerView.setLayoutManager(mLayoutManager);
         return root;
     }
 
+    private  void loadPhotos(Context context){
+        GetPhotoInput input = new GetPhotoInput();
+        input.AssetType="All";
+        input.First = 5000;
+        GalleryAlbumProvider.getPhotos(input, context, new GalleryAlbumProvider.GetPhotoCallback() {
+            @Override
+            public void onResult(GetPhotoOutput result) {
+
+                dataAdaptor = new GalleryListRecylerviewDataAdaptor(result);
+                recyclerView.setAdapter(dataAdaptor);
+            }
+        });
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

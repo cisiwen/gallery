@@ -58,9 +58,17 @@ public class GalleryAlbumProvider {
         StringBuilder selection = new StringBuilder("1");
         List<String> selectionArgs = new ArrayList<>();
 
-        selection.append(" AND " + MediaStore.Files.FileColumns.MEDIA_TYPE + " IN ("
-                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO + ","
-                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE + ")");
+        if (assetType.equals(ASSET_TYPE_PHOTOS)) {
+            selection.append(" AND " + MediaStore.Files.FileColumns.MEDIA_TYPE + " = "
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+        } else if (assetType.equals(ASSET_TYPE_VIDEOS)) {
+            selection.append(" AND " + MediaStore.Files.FileColumns.MEDIA_TYPE + " = "
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
+        } else if (assetType.equals(ASSET_TYPE_ALL)) {
+            selection.append(" AND " + MediaStore.Files.FileColumns.MEDIA_TYPE + " IN ("
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO + ","
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE + ")");
+        }
 
 
         final String[] projection = {MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME};

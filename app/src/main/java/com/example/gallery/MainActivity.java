@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        loadPhotos();
+      //loadAlbums();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -70,27 +70,29 @@ public class MainActivity extends AppCompatActivity {
         //Map<String,Integer> albums = GalleryAlbumProvider.getAlbums(this);
         //Log.println(Log.DEBUG,"wweng", Integer.toString(albums.size()));
     }
+
+    private void loadAllAlbums(){
+        Map<String,Integer> albums  = GalleryAlbumProvider.getAlbums(this);
+        Log.println(Log.DEBUG, "wweng", Integer.toString(albums.size()));
+    }
     private void loadAlbums() {
         Map<String,Integer> albums = null;// GalleryAlbumProvider.getAlbums(this);
-        if(albums!=null) {
-            Log.println(Log.DEBUG, "wweng", Integer.toString(albums.size()));
-        }
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+                Manifest.permission.READ_MEDIA_IMAGES)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Permission is not granted
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    Manifest.permission.READ_MEDIA_IMAGES)
             ) {
                  Log.println(Log.INFO,"wweng","need rational");
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(
                         this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES},
                         45
                 );
 
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     private  void loadPhotos(){
         GetPhotoInput input = new GetPhotoInput();
         input.AssetType="All";
+        input.First = 5000;
         GalleryAlbumProvider.getPhotos(input, this, new GalleryAlbumProvider.GetPhotoCallback() {
             @Override
             public void onResult(GetPhotoOutput result) {

@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.gallery.R;
 import com.example.gallery.databinding.FragmentMainBinding;
@@ -35,6 +36,7 @@ public class PlaceholderFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private GalleryListRecylerviewDataAdaptor dataAdaptor;
+    int index = 1;
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
         Bundle bundle = new Bundle();
@@ -47,12 +49,14 @@ public class PlaceholderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pageViewModel = new ViewModelProvider(this).get(PageViewModel.class);
-        int index = 1;
+
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
-        loadPhotos(this.getContext());
+        if(index==1) {
+            loadPhotos(this.getContext());
+        }
     }
 
     @Override
@@ -63,7 +67,8 @@ public class PlaceholderFragment extends Fragment {
         binding = FragmentMainBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         recyclerView = (RecyclerView) root.findViewById(R.id.listview);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),4);
+        //RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(,StaggeredGridLayoutManager.VERTICAL);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getContext(),4);
         recyclerView.setLayoutManager(mLayoutManager);
         return root;
     }

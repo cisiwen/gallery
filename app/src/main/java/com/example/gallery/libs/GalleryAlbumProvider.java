@@ -1,6 +1,7 @@
 package com.example.gallery.libs;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -457,8 +458,15 @@ public class GalleryAlbumProvider {
             boolean includePlayableDuration,
             boolean includeOrientation) {
         Image image = new Image();
-        Uri photoUri = Uri.parse("file://" + media.getString(dataIndex));
-        image.uri = photoUri.toString();
+        Uri photoUri = Uri.parse("file:///" + media.getString(dataIndex));
+        image.uri = "file://"+media.getString(dataIndex); //photoUri.toString();
+
+        int idx =media.getColumnIndex(Images.ImageColumns._ID);
+        int _thumpId = media.getInt(idx);
+        image.imageId = media.getLong(idx);
+        Uri imageUri_t = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,_thumpId);
+        image.uri = imageUri_t.toString();//media.getString(idx);
+        image.imageUri = Uri.parse(image.uri);
         String mimeType = media.getString(mimeTypeIndex);
 
         boolean isVideo = mimeType != null && mimeType.startsWith("video");
